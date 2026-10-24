@@ -237,8 +237,8 @@ end
 """
     load_pig(source::Symbol; segments=1:4) -> (p, q, h)
 
-Aortic pressure `p` [mmHg] and flow `q` [mL/s] from a 70 kg pig, `source` = `:invivo`
-(2020-12-01) or `:exvivo` (heart beating against a synthetic afterload, 2020-12-02).
+Aortic pressure `p` [mmHg] and flow `q` [mL/s] from 65 kg pigs, `source` = `:invivo`
+(2020-12-01) or `:exvivo` (a different heart beating against a synthetic afterload, 2020-12-02).
 The recording is split in four contiguous segments; `segments` picks which to concatenate.
 The raw files store flow in L/min; it is converted here. Sampling period `h` = 5 ms.
 """
