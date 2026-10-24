@@ -59,9 +59,9 @@ ctmodel(::typeof(G3), θ) = wk3(θ)
 ctmodel(::typeof(G2), θ) = wk2(θ)
 
 "Initial state as a tuple of the model's length and of the type the recursion will produce (type-stable loops)."
-function initstate((ad, bd, c, d)::NTuple{4,Any}, x0, u)
+function initstate((ad, bd, c, d)::Tuple{NTuple{N,Any},Any,Any,Any}, x0, u) where {N}
     T = promote_type(eltype(ad), eltype(bd), eltype(c), typeof(d), eltype(x0), eltype(u))
-    return ntuple(i -> T(x0[i]), Val(length(ad)))
+    return ntuple(i -> T(x0[i]), Val(N))
 end
 
 "Simulate discrete diagonal model `md` from initial state `x0`; writes the output into `y` (and states into `X`, if given)."

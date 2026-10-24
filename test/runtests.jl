@@ -125,13 +125,11 @@ end
     θ = θpaper4
     md = zoh(wk4(θ), h)
     x0 = solvex0(md, u)
-    sse(md, u, y, x0)
-    @test (@allocated sse(md, u, y, x0)) == 0
+    allocs(f::F, args::Vararg{Any,N}) where {F,N} = (f(args...); @allocated f(args...)) # specialised, so it measures f only
+    @test allocs(sse, md, u, y, x0) == 0
     id = IdConditions(θ, x0, [1, 1, 1, 1], false, true)
-    us, ys = u[1:100], y[1:100]
-    cost(θ, id, u, y, h)
     # allocations of the cost (parameter unpacking only) must not grow with the data length
-    @test (@allocated cost(θ, id, u, y, h)) == (@allocated cost(θ, id, us, ys, h))
+    @test allocs(cost, θ, id, u, y, h) == allocs(cost, θ, id, u[1:100], y[1:100], h)
     identify(θ, x0, u, y, h; x0id=false, x0solve=true)
     t = @elapsed identify(θ, x0, u, y, h; x0id=false, x0solve=true)
     @test t < 2 # about 0.1 s on a laptop; this only catches gross regressions
