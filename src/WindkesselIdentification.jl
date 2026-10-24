@@ -90,24 +90,25 @@ function sse(md, u, y, x0)
 end
 
 """
-Solve for x0 by leveraging the periodicity of the input signal.
+    solvex0(sys, u)
+
+Initial state for which the response to `u` is periodic: x(n) = x(0), with n = length(u).
+With s the state reached from x(0) = 0 after n steps, x(0) = (I - A^n)^-1 s.
+`sys` is a discrete StateSpace, e.g. `G(θ, h)`.
 """
 function solvex0(md::Tuple, u::AbstractVector)
     ad, bd, _, _ = md
-    n = length(u)
-    # state after n-1 steps from x0 = 0
-    xn1 = initstate(md, zeros(length(ad)), u)
-    for k in 1:n-1
-        xn1 = map((adi, xi, bi) -> adi * xi + bi * u[k], ad, xn1, bd)
+    s = initstate(md, zeros(length(ad)), u)
+    for k in eachindex(u)
+        s = map((adi, si, bi) -> adi * si + bi * u[k], ad, s, bd)
     end
-    return collect(map((adi, xi, bi) -> (xi + adi^(n - 1) * bi * u[n]) / (1 - adi^n), ad, xn1, bd))
+    return collect(map((adi, si) -> si / (1 - adi^length(u)), ad, s))
 end
 
 function solvex0(sys::StateSpace{<:Discrete}, u::AbstractVector)
-    n = length(u)
     x = lsim(sys, reshape(u, 1, :); x0=zeros(sys.nx)).x
-    x0 = (I - sys.A^n) \ (sys.A^(n - 1) * sys.B * u[end] + x[:, end])
-    return x0[:]
+    s = sys.A * x[:, end] + vec(sys.B) * u[end]
+    return (I - sys.A^length(u)) \ s
 end
 
 struct IdConditions

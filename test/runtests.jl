@@ -78,7 +78,7 @@ end
         sys = Gm(θ, h)
         x0 = solvex0(sys, u1)
         xn = sys.A * lsim(sys, reshape(u1, 1, :); x0=x0).x[:, end] + sys.B * u1[end]
-        @test_broken xn ≈ x0 rtol = 1e-10
+        @test xn ≈ x0 rtol = 1e-10
         @test solvex0(zoh(WindkesselIdentification.ctmodel(Gm, θ), h), u1) ≈ x0
     end
 end
