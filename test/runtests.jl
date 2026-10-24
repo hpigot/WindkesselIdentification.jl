@@ -147,6 +147,19 @@ end
     end
 end
 
+@testset "reference outputs for ports are current" begin
+    include("reference/generate.jl")
+    using .Reference
+    ref(f) = readdlm(joinpath(@__DIR__, "reference", f), ','; comments=true, header=true)[1]
+    @test hcat(reference_simulation()...) ≈ Float64.(ref("simulation.csv")) rtol = 1e-10
+    fits = ref("fits.csv")
+    for (i, (name, θ, x0, mse)) in enumerate(reference_fits())
+        @test fits[i, 1] == name
+        @test isequal(isnan.([θ; x0; mse]), isnan.(Float64.(fits[i, 2:end])))
+        @test filter(!isnan, [θ; x0; mse]) ≈ filter(!isnan, Float64.(fits[i, 2:end])) rtol = 1e-6
+    end
+end
+
 @testset "speed" begin
     y, u = stergiopulos_beats(20)
     θ = θpaper4
