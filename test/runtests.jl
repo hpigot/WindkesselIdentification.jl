@@ -2,10 +2,24 @@ using WindkesselIdentification, Test, ControlSystemsBase, ForwardDiff, LinearAlg
 using WindkesselIdentification: wk2, wk3, wk4, zoh, sse
 
 const h = 0.005
-# Paper fits (Pigot et al. 2021, via controlled-cardiac-afterload θwk4/θwk2), in v1.0 units:
-# R [mmHg/(L/min)], C [(L/min) s/mmHg], L [mmHg s/(L/min)]; converted here to mL/s.
-const θpaper4 = [13.6 * 60 / 1000, 0.0743 * 1000 / 60, 0.952 * 60 / 1000, 0.0952 * 60 / 1000]
-const θpaper2 = [13.6 * 60 / 1000, 0.0996 * 1000 / 60]
+# Table 2 of Pigot et al. (2021), doi:10.1016/j.ifacol.2021.10.307, in the v1.0 units:
+# R [mmHg/(L/min)], C [(L/min) s/mmHg], L [mmHg s/(L/min)]. (The paper's Table 1 labels C and L
+# with minutes; the code used seconds.) `tomLs` converts to the mmHg, mL/s, s units used here.
+tomLs(θ) = [θ[1] * 0.06, θ[2] / 0.06, (θ[3:end] .* 0.06)...]
+# (data, model, θ, MSE, which θ entries are identifiable enough to compare)
+const table2 = [
+    (:human, G, [13.6, 0.0743, 0.952, 0.0952], 5.88, 1:4),
+    (:human, G3, [13.0, 0.108, 0.582], 8.48, 1:3),
+    (:human, G2, [13.6, 0.0996], 48.2, 1:2),
+    (:invivo, G, [62.9, 0.0855, 1.58, 8.52], 30.9, 1:3), # L is practically unidentifiable
+    (:invivo, G3, [61.3, 0.0877, 1.58], 30.9, 1:3),
+    (:invivo, G2, [62.9, 0.0853], 77.1, 1:2),
+    (:exvivo, G, [148, 0.345, 0.615, 31.3], 7.16, 1:3),
+    (:exvivo, G3, [148, 0.346, 0.615], 7.16, 1:3),
+    (:exvivo, G2, [147, 0.353], 23.3, 1:1), # C sits in a flat valley (refit gives 0.363)
+]
+const θpaper4 = tomLs(table2[1][3])
+const θpaper2 = tomLs(table2[3][3])
 
 readdlm_time(f) = string.(readdlm(f, ','; skipstart=2)[:, 1])
 
@@ -109,14 +123,27 @@ end
             θid=ones(Int, length(θ)), x0id=false, x0solve=true, G_=Gm)
         @test phat ≈ θ rtol = 0.02
     end
+    # x0 identified as parameters instead of solved; and unconstrained Newton
+    θ = θpaper4[1:3]
+    x0 = solvex0(G3(θ, h), u)
+    y = simulate(θ, x0, u, h; G_=G3) .+ 0.5 .* randn(rng, length(u))
+    for θpos in (true, false)
+        phat, _ = identify(1.3 .* θ, 0.9 .* x0, u, y, h; θid=[1, 1, 1], x0id=true, G_=G3, θpos=θpos)
+        θhat, x0hat = deal(phat, IdConditions(θ, x0, [1, 1, 1], true, false, G3))
+        @test θhat ≈ θ rtol = 0.02
+        @test x0hat ≈ x0 rtol = 0.02
+    end
 end
 
-@testset "reproduces the paper fit on Stergiopulos 1999" begin
-    y, u = stergiopulos_beats(20)
-    for (Gm, θ) in ((G, θpaper4), (G2, θpaper2))
+@testset "reproduces Table 2 of the paper" begin
+    data = Dict(:human => stergiopulos_beats(20), :invivo => load_pig(:invivo)[1:2], :exvivo => load_pig(:exvivo)[1:2])
+    for (source, Gm, θv1, mse, cmp) in table2
+        y, u = data[source]
+        θ = tomLs(θv1)
         phat, res = identify(θ, solvex0(Gm(θ, h), u), u, y, h;
             θid=ones(Int, length(θ)), x0id=false, x0solve=true, G_=Gm)
-        @test phat ≈ θ rtol = 0.005 # paper reports 3 significant figures
+        @test res.minimum / length(u) ≈ mse rtol = 0.01 # 3 significant figures, plus the solvex0 fix
+        @test phat[cmp] ≈ θ[cmp] rtol = 0.01
     end
 end
 

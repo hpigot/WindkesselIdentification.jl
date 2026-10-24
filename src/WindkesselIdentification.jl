@@ -162,7 +162,7 @@ function identify(θ0,x00,u,y,h;θid=[1,1,1,1],x0id=true,x0solve=false,G_=G,θpo
     local res
     if θpos
         up = Float64[]
-        lp = vcat(zeros(+(id.θid...)),fill(-Inf,length(x00)))
+        lp = [fill(0.0, sum(id.θid)); fill(-Inf, length(p0) - sum(id.θid))] # θ >= 0, x0 free
         dfc = TwiceDifferentiableConstraints(lp, up)
         res = optimize(df,dfc,p0,IPNewton(),opts)
     else
