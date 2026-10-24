@@ -1,0 +1,9 @@
+[deps]
+ControlSystemsBase = "aaaaaaaa-a6ca-5380-bf3e-84a91bcd477e"
+FFTW = "7a1cc6ca-52ef-59f5-83cd-3a7055c09341"
+ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
+Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
+WindkesselIdentification = "6c114556-3ef0-4f7c-b36e-71ae1db06118"
+
+[sources]
+WindkesselIdentification = {path = ".."}
