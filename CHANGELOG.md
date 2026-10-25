@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.0.0 (unreleased)
+## 2.0.0 (2026-10-25)
 
 First release as a registered Julia package. Version 1.0 (git tag `v1.0`) is the code used for
 Pigot et al. (2021); this version reproduces its Table 2 (see `test/runtests.jl`).

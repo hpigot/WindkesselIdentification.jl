@@ -9,6 +9,7 @@ authors:
 license: MIT
 repository-code: "https://github.com/hpigot/WindkesselIdentification.jl"
 version: 2.0.0
+date-released: 2026-10-25
 keywords:
   - Windkessel
   - system identification
