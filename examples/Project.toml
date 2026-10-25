@@ -7,3 +7,11 @@ WindkesselIdentification = "6c114556-3ef0-4f7c-b36e-71ae1db06118"
 
 [sources]
 WindkesselIdentification = {path = ".."}
+
+[compat]
+ControlSystemsBase = "1.25"
+FFTW = "1"
+ForwardDiff = "1"
+Plots = "1"
+WindkesselIdentification = "2"
+julia = "1.10"
