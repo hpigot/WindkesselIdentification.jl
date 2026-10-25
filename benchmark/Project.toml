@@ -4,5 +4,8 @@ ControlSystemsBase = "aaaaaaaa-a6ca-5380-bf3e-84a91bcd477e"
 ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
 WindkesselIdentification = "6c114556-3ef0-4f7c-b36e-71ae1db06118"
 
-[sources]
-WindkesselIdentification = {path = ".."}
+[sources.WindkesselIdentification]
+path = ".."
+
+[compat]
+ControlSystemsBase = "1"
