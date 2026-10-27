@@ -1,5 +1,5 @@
 using WindkesselIdentification, Test, ControlSystemsBase, ForwardDiff, LinearAlgebra, Random, Dates, DelimitedFiles, Aqua
-using WindkesselIdentification: wk2, wk3, wk4, zoh, sse
+using WindkesselIdentification: wk2, wk3, wk4, zoh, sse, deal
 
 const h = 0.005
 # Table 2 of Pigot et al. (2021), doi:10.1016/j.ifacol.2021.10.307, in the v1.0 units:

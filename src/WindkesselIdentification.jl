@@ -8,7 +8,7 @@ module WindkesselIdentification
 
 using LinearAlgebra, DelimitedFiles, ControlSystemsBase, Optim, LineSearches, ForwardDiff
 
-export IdConditions, identify, identifyglobal, cost, simulate, G, G3, G2, p, deal, solvex0,
+export IdConditions, identify, identifyglobal, cost, simulate, G, G3, G2, solvex0,
     params_stergiopulos1999total, mLs_to_Lmin, Lmin_to_mLs, load_stergiopulos1999, load_pig
 
 "L/min per mL/s"
