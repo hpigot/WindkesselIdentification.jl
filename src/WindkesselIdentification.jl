@@ -201,7 +201,7 @@ Retrieve original parametrization.
 """
 function deal(p,id::IdConditions)
     pidx = cumsum(id.θid)
-    θ = [Bool(id_) ? p_ : θ0_ for (p_,θ0_,id_) in zip(p[pidx],id.θ0,id.θid)]
+    θ = [Bool(id_) ? p[k] : θ0_ for (k,θ0_,id_) in zip(pidx,id.θ0,id.θid)] # p[k] only for free entries: k is 0 before the first
     x0 = id.x0id ? p[sum(id.θid).+(1:length(id.x00))] : id.x00
     return θ,x0
 end

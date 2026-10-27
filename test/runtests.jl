@@ -133,6 +133,9 @@ end
         @test θhat ≈ θ rtol = 0.02
         @test x0hat ≈ x0 rtol = 0.02
     end
+    # a fixed first parameter (θid[1] = 0)
+    phat, _ = identify([θ[1]; 1.3 .* θ[2:3]], x0, u, y, h; θid=[0, 1, 1], x0id=false, x0solve=true, G_=G3)
+    @test deal(phat, IdConditions(θ, x0, [0, 1, 1], false, true, G3))[1] ≈ θ rtol = 0.02
 end
 
 @testset "reproduces Table 2 of the paper" begin
