@@ -12,6 +12,8 @@ Pigot et al. (2021); this version reproduces its Table 2 (see `test/runtests.jl`
   L/min with time in s, so to convert v1.0 values multiply Rp, Rc and L by 0.06 and divide C by
   0.06. The first state, the volume on C, is now in mL (v1.0 value times 1000/60); the second is
   unchanged. `load_pig` returns flow in mL/s; `Lmin_to_mLs` and `mLs_to_Lmin` convert.
+- `p` and `deal` are no longer exported (`p` collided with user variables); use
+  `WindkesselIdentification.p` and `WindkesselIdentification.deal`.
 - Hessian condition numbers depend on the units, so they differ from the ones in the paper.
 - Scripts moved to `examples/` and data to `data/`. `id_invivo.jl` and `id_exvivo.jl` are now
   `id_pig.jl invivo|exvivo`; `id_stergiopulos1999total.jl` is `id_stergiopulos1999.jl`.
@@ -24,6 +26,7 @@ Pigot et al. (2021); this version reproduces its Table 2 (see `test/runtests.jl`
   0.03%.
 - Table 1 of the paper labels C in L/mmHg and L in mmHg min/(L/min), but v1.0 computed them with
   time in seconds: its C = 0.0743 is (L/min) s/mmHg, i.e. 1.24 mL/mmHg.
+- `deal` (and so `identify`) failed when the first parameter was fixed (`θid[1] = 0`).
 - The lower-bound vector in `identify` had the wrong length when x0 was identified (harmless:
   the extra bounds were -Inf).
 
@@ -39,5 +42,6 @@ Pigot et al. (2021); this version reproduces its Table 2 (see `test/runtests.jl`
 ### Added
 
 - `load_stergiopulos1999` and `load_pig` data loaders.
+- Documentation with Documenter.jl, and coverage tracking.
 - Tests (including the paper's Table 2 and reference outputs for ports in `test/reference/`),
   benchmarks in `benchmark/`, CI, and figures in `docs/`.

@@ -1,7 +1,7 @@
-# Figures for the README, written to docs/. Run from the repository root:
+# Figures for the README, written to docs/src/assets/. Run from the repository root:
 #   julia --project=examples examples/readme_figures.jl
 include("idanalysis.jl")
-docs = joinpath(dirname(@__DIR__), "docs")
+docs = joinpath(dirname(@__DIR__), "docs", "src", "assets")
 mkpath(docs)
 ink, series = "#2b2b28", ["#2a78d6", "#eb6834", "#1baf7a"] # validated categorical slots 1-3
 default(fontfamily="sans-serif", grid=true, gridalpha=0.15, framestyle=:box, foreground_color_axis=:gray40,

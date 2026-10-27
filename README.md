@@ -1,6 +1,9 @@
 # WindkesselIdentification.jl
 
+[![Stable docs](https://img.shields.io/badge/docs-stable-blue.svg)](https://hpigot.github.io/WindkesselIdentification.jl/stable/)
+[![Dev docs](https://img.shields.io/badge/docs-dev-blue.svg)](https://hpigot.github.io/WindkesselIdentification.jl/dev/)
 [![CI](https://github.com/hpigot/WindkesselIdentification.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/hpigot/WindkesselIdentification.jl/actions/workflows/CI.yml)
+[![Coverage](https://codecov.io/gh/hpigot/WindkesselIdentification.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/hpigot/WindkesselIdentification.jl)
 [![Aqua QA](https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg)](https://github.com/JuliaTesting/Aqua.jl)
 
 Fit 2-element, 3-element and parallel 4-element Windkessel models of the cardiac afterload to
@@ -13,7 +16,7 @@ The package is the code behind [Pigot et al. (2021), _Identification of cardiac 
 from data_](https://doi.org/10.1016/j.ifacol.2021.10.307), IFAC-PapersOnLine 54(15), 508-513, and
 ships the three data sets used there.
 
-![WK4, WK3 and WK2 fits to a human aortic pressure beat](docs/fit.png)
+![WK4, WK3 and WK2 fits to a human aortic pressure beat](docs/src/assets/fit.png)
 
 ## Installation
 
@@ -43,6 +46,8 @@ The 3- and 2-element models are `G3` and `G2`: pass `θid=[1, 1, 1]` (or `[1, 1]
 fixed (`θid=[1, 1, 1, 0]`), or drop the positivity constraint (`θpos=false`). `identifyglobal`
 uses Nelder-Mead instead. `G(θ, h)` returns a ControlSystemsBase `StateSpace` for use with that
 ecosystem (`bode`, `lsim`, ...); `G(θ, h; discretize=false)` gives the continuous-time model.
+The [documentation](https://hpigot.github.io/WindkesselIdentification.jl/stable/) describes every
+function and keyword argument.
 
 ### Models and units
 
@@ -68,7 +73,7 @@ On the human beat the cost has a clear minimum. On the pig data it is flat for a
 0.3 mmHg s^2/mL, so L cannot be identified there and the 3-element model fits as well as the
 4-element one. This is the paper's conclusion; see its figures for the Hessian-based analysis.
 
-![MSE increase over a fixed L, human and pig data](docs/identifiability.png)
+![MSE increase over a fixed L, human and pig data](docs/src/assets/identifiability.png)
 
 ## Data
 
@@ -103,7 +108,9 @@ of this package to other languages. The test suite checks that they are current.
 ## Upgrading from version 1.0
 
 Version 1.0 (tag `v1.0`) is the code as used for the paper. Replace `include("oeid.jl")` with
-`using WindkesselIdentification`, and note that the units changed from L/min to mL/s.
+`using WindkesselIdentification`, and note that the units changed from L/min to mL/s. The
+parameter-packing helpers `p` and `deal` are no longer exported; call them as
+`WindkesselIdentification.deal` or import them with `using WindkesselIdentification: p, deal`.
 [CHANGELOG.md](CHANGELOG.md) lists the changes and two corrections to the paper.
 
 ## Related packages
